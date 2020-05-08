@@ -4,16 +4,14 @@
 :headers="headers"
 :items="items">
 <template #top>
-<div class="top-div"><p class="display-1 white--text">projectSupplies
-<span>
+<div class="top-div">
 <v-tooltip bottom>
 <template #activator="{ on }">
 <v-btn id="add" class="white--text" @click="add" v-on="on"><v-icon class="black--text">add</v-icon></v-btn>
 </template>
 <span>add row</span>
 </v-tooltip>
-</span>
-</p></div>
+</div>
 </template>
 <template #item.projectSupplies="{item}">
   <td v-if="editable && editindex==items.indexOf(item)">

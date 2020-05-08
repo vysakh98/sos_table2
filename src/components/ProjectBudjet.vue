@@ -5,14 +5,17 @@ class="elevation-1"
 :headers="headers">
 <template #top>
 <div id="headers">
-<h1 id="TotalProject">TotalProject <span id="year1">Year1</span></h1>
+<h1 id="TotalProject">TotalProject</h1>
+<h1 id="year1">Year1</h1>
 </div>
 </template>
 <template #no-data>
 <tr>
  <td colspan="10" id="personalSelector1">
-   <v-app-bar-nav-icon class="personalSelectoricon" @click="Personalcostshow=!Personalcostshow" ></v-app-bar-nav-icon>
+   <v-app-bar-nav-icon class="personalSelectoricon" @click="Personalcostshow=!Personalcostshow , PersonalcostSpan=!PersonalcostSpan" ></v-app-bar-nav-icon>
    <span>PersonalCost</span>
+   <span  v-show="PersonalcostSpan"> <v-chip id="subtotalspan1" class="">Total Personal Cost: €{{personalcostTotal}}</v-chip> </span>
+   <span  v-show="PersonalcostSpan"><v-chip id="subtotalspan2" class=""> Year1 Personal Cost: €{{personalcostyear1total}} </v-chip> </span>
  </td>
 </tr>
 </template>
@@ -25,8 +28,10 @@ class="elevation-1"
 <tr>
  <td :colspan="headers.length" class="selector">
    <div class="personalSelector">
-   <v-app-bar-nav-icon class="personalSelectoricon" @click="Subcontractingshow=!Subcontractingshow" ></v-app-bar-nav-icon>
+   <v-app-bar-nav-icon class="personalSelectoricon" @click="Subcontractingshow=!Subcontractingshow , subcontractingSpan=!subcontractingSpan" ></v-app-bar-nav-icon>
    <span>Subcontracting</span>
+   <span class="subtotalspan" v-show="subcontractingSpan"> <v-chip class="">Total Subcontracting Cost: €{{contractingcost}}</v-chip> </span>
+   <span class="subtotalspan" v-show="subcontractingSpan"><v-chip class=""> Year1 Subcontracting Cost : €{{year1contractingcost}} </v-chip> </span>
    </div>
  </td>
 </tr>
@@ -38,8 +43,11 @@ class="elevation-1"
 <tr>
  <td :colspan="headers.length" class="selector">
    <div class="personalSelector">
-   <v-app-bar-nav-icon class="personalSelectoricon" @click="Localofficeshow=!Localofficeshow" ></v-app-bar-nav-icon>
+   <v-app-bar-nav-icon class="personalSelectoricon" @click="Localofficeshow=!Localofficeshow,
+   localofficecostSpan=!localofficecostSpan" ></v-app-bar-nav-icon>
    <span>Local office</span>
+    <span  v-show="localofficecostSpan"> <v-chip class="subtotalspan">Total Local Office Cost: €{{localofficeTotal}}</v-chip> </span>
+   <span  v-show="localofficecostSpan"><v-chip  class="subtotalspan"> Year1 Local Office Cost: €{{loclaofficeyear1total}} </v-chip> </span>
    </div>
  </td>
 </tr>
@@ -51,8 +59,10 @@ class="elevation-1"
 <tr>
  <td :colspan="headers.length" class="selector">
    <div class="personalSelector">
-   <v-app-bar-nav-icon class="personalSelectoricon" @click="projectSuppliesshow=!projectSuppliesshow" ></v-app-bar-nav-icon>
+   <v-app-bar-nav-icon class="personalSelectoricon" @click="projectSuppliesshow=!projectSuppliesshow,projectsuppliesSpan=!projectsuppliesSpan" ></v-app-bar-nav-icon>
    <span>projectSupplies</span>
+   <span  v-show="projectsuppliesSpan"> <v-chip class="subtotalspan">Total Project Supplies Cost: €{{suppliescost}}</v-chip> </span>
+   <span  v-show="projectsuppliesSpan"><v-chip  class="subtotalspan"> Year1 Local Office Cost: €{{year1suppliescost}} </v-chip> </span>
    </div>
  </td>
 </tr>
@@ -64,8 +74,10 @@ class="elevation-1"
 <tr>
  <td :colspan="headers.length" class="selector">
    <div class="personalSelector">
-   <v-app-bar-nav-icon class="personalSelectoricon" @click="projectequipmentMaintenenseshow=!projectequipmentMaintenenseshow" ></v-app-bar-nav-icon>
+   <v-app-bar-nav-icon class="personalSelectoricon" @click="projectequipmentMaintenenseshow=!projectequipmentMaintenenseshow,projectequipmentMaintenensesSpan=!projectequipmentMaintenensesSpan" ></v-app-bar-nav-icon>
    <span>project equipment maintenense</span>
+    <span  v-show="projectequipmentMaintenensesSpan"> <v-chip class="subtotalspan">Total Equipment Maintenense Cost: €{{maintanenececost}}</v-chip> </span>
+   <span  v-show="projectequipmentMaintenensesSpan"><v-chip  class="subtotalspan"> Year1 Equipment Maintenense  Office Cost: €{{year1maintanence}} </v-chip> </span>
    </div>
  </td>
 </tr>
@@ -77,8 +89,11 @@ class="elevation-1"
 <tr>
  <td :colspan="headers.length" class="selector">
    <div class="personalSelector">
-   <v-app-bar-nav-icon class="personalSelectoricon" @click="Travleshow=!Travleshow" ></v-app-bar-nav-icon>
+   <v-app-bar-nav-icon class="personalSelectoricon" @click="Travleshow=!Travleshow,
+   TravleshowSpan=!TravleshowSpan" ></v-app-bar-nav-icon>
    <span>Travel</span>
+   <span  v-show="TravleshowSpan"> <v-chip class="subtotalspan">Total Travel Cost: €{{travelcost}}</v-chip> </span>
+   <span  v-show="TravleshowSpan"><v-chip  class="subtotalspan"> Year1 Travel Cost: €{{yaer1travelcost}} </v-chip> </span>
    </div>
  </td>
 </tr>
@@ -90,8 +105,10 @@ class="elevation-1"
 <tr>
  <td :colspan="headers.length" class="selector">
    <div class="personalSelector">
-   <v-app-bar-nav-icon class="personalSelectoricon" @click="Meeting_and_workshopsshow=!Meeting_and_workshopsshow"></v-app-bar-nav-icon>
+   <v-app-bar-nav-icon class="personalSelectoricon" @click="Meeting_and_workshopsshow=!Meeting_and_workshopsshow,MeetingndworkshopsSpan=!MeetingndworkshopsSpan"></v-app-bar-nav-icon>
    <span>Meeting and workshops</span>
+   <span  v-show="MeetingndworkshopsSpan"> <v-chip class="subtotalspan">Total Meeting And Workshops  Cost: €{{workshopscostTotal}}</v-chip> </span>
+   <span  v-show="MeetingndworkshopsSpan"><v-chip  class="subtotalspan"> Year1 Meeting And Workshops  Cost: €{{workshopscostyear1total}} </v-chip> </span>
    </div>
  </td>
 </tr>
@@ -182,20 +199,20 @@ import Travel  from '@/components/Travel.vue'
 export default{
   data(){
   return{
-  personalcostTotal:null,
-  personalcostyear1total:null,
-  localofficeTotal:null,
-  loclaofficeyear1total:null,
-  workshopscostTotal:null,
-  workshopscostyear1total:null,
-  travelcost:null,
-  yaer1travelcost:null,
-  contractingcost:null,
-  year1contractingcost:null,
-  suppliescost:null,
-  year1suppliescost:null,
-  maintanenececost:null,
-  year1maintanence:null,
+  personalcostTotal:0,
+  personalcostyear1total:0,
+  localofficeTotal:0,
+  loclaofficeyear1total:0,
+  workshopscostTotal:0,
+  workshopscostyear1total:0,
+  travelcost:0,
+  yaer1travelcost:0,
+  contractingcost:0,
+  year1contractingcost:0,
+  suppliescost:0,
+  year1suppliescost:0,
+  maintanenececost:0,
+  year1maintanence:0,
   Personalcostshow:false,
   Subcontractingshow:false,
   Localofficeshow:false,
@@ -203,6 +220,13 @@ export default{
   Travleshow:false,
   projectequipmentMaintenenseshow:false,
   Meeting_and_workshopsshow:false,
+  PersonalcostSpan:true,
+  subcontractingSpan:true,
+  localofficecostSpan:true,
+  projectsuppliesSpan:true,
+  TravleshowSpan:true,
+  MeetingndworkshopsSpan:true,
+  projectequipmentMaintenensesSpan:true,
   headers:[{text:'Budget categories',value:'',sortable:false},
   {text:'Units',value:'',sortable:false},
   {text:'No_of Units',value:'',sortable:false},
@@ -282,6 +306,26 @@ computed:{
 
 
 <style>
+.subtotalspan{
+  border-radius:15px;
+  margin-left:20px;
+  padding:5px 5px;
+  font-size:1.5em;
+}
+#subtotalspan1{
+  border-radius:15px;
+  margin-left:20px;
+  padding:5px 5px;
+  font-size:1.0em;
+}
+#subtotalspan2{
+  border-radius:15px;
+  margin-left:20px;
+  padding:5px 5px;
+  font-size:1.0em;
+}
+#year1{
+}
 #personalSelector1{
 padding-left:0px;
 font-size:1.5em;
@@ -291,13 +335,16 @@ color:black;
   background-color:grey;
   color:white;
   padding-left:20%;
+  width:46.6%;
+  display:inline-block;
+  border-right:2px solid black;
 }
 #year1{
-  padding-top:10px;
   color:white;
-  position:relative;
-  left:30%;
-  margin-right:1px solid blue;
+  width:53.4%;
+  padding-left:20%;
+  background-color:grey;
+  display:inline-block;
 }
 #table-td{
   padding-left:0px;
@@ -308,6 +355,8 @@ color:black;
 
 #top-container th{
   width:800px;
+}
+#top-container td{
 }
 
 #top-container th:nth-child(9){
