@@ -1,8 +1,25 @@
 <template>
 <v-container fluid id="top-container">
+<v-data-table class="elevation-1"
+hide-default-header="true" 
+hide-default-footer="true"
+>
+<template #top>
+<div id="top-table-no-data" class="display-1">Project Budjet (Threatend Species Grant)</div>
+<v-btn id="addTop" class="white--text" @click="dialog=true" v-on="on"><v-icon class="black--text">add</v-icon></v-btn>
+</template>
+<template #no-data>
+<div class="project">
+<p >Project Name:<span v-if="form1">{{ProjectName}}</span><span v-if="form2">{{ProjectName2}}</span></p>
+<p>Project Code:<span v-if="form1">{{ProjectCode}}</span><span v-if="form2">{{ProjectCode2}}</span></p>
+<p>Lead Organization:<span v-if="form1">{{LeadOrganization}}</span><span v-if="form2">{{LeadOrganization2}}</span></p>
+</div>
+</template>
+<template #body.append>
 <v-data-table
 class="elevation-1"
-:headers="headers">
+:headers="headers"
+ hide-default-footer="true">
 <template #top>
 <div id="headers">
 <h1 id="TotalProject">TotalProject</h1>
@@ -118,7 +135,7 @@ class="elevation-1"
  </td>
 </tr>
 <tr>
-<td>subtotal-eligible-cost</td>
+<td>Subtotal-Eligible-Cost</td>
 <td></td>
 <td></td>
 <td></td>
@@ -131,7 +148,7 @@ class="elevation-1"
 <td></td>
 </tr>
 <tr>
-<td>indirect-cost</td>
+<td>Indirect-Cost</td>
 <td></td>
 <td></td>
 <td></td>
@@ -144,7 +161,7 @@ class="elevation-1"
 <td></td>
 </tr>
 <tr>
-<td>total-project-budjet</td>
+<td>Total-Project-Budjet</td>
 <td></td>
 <td></td>
 <td></td>
@@ -157,7 +174,7 @@ class="elevation-1"
 <td></td>
 </tr>
 <tr>
-<td>tota-sos-funding-requested</td>
+<td>Total-Sos-Funding-Requested</td>
 <td></td>
 <td></td>
 <td></td>
@@ -170,7 +187,7 @@ class="elevation-1"
 <td></td>
 </tr>
 <tr>
-<td>percentage-co-financing</td>
+<td>Percentage-Co-Financing</td>
 <td></td>
 <td></td>
 <td></td>
@@ -184,11 +201,43 @@ class="elevation-1"
 </tr>
 </template>
 </v-data-table>
+</template>
+</v-data-table>
+<v-dialog
+      v-model="dialog"
+      max-width="390"
+    >
+    <v-card class="card">
+    <v-toolbar>
+    <v-tabs fixed-tabs background-color="grey" dark>
+    <v-tab  @click="form1=true,form2=false"> New Project </v-tab>
+    <v-tab  @click="form2=true,form1=false"> Projects </v-tab>
+    </v-tabs> 
+    </v-toolbar>
+    <v-form v-show="form1" class="form" ref="form1">
+    <v-text-field v-model="ProjectName" label="Project Name" :rules="Rules.ProjectNamerule" required></v-text-field>
+    <v-text-field class="input" label="Project Code" v-model="ProjectCode" :rules="Rules.ProjectCodeule" required></v-text-field>
+    <v-text-field class="input" v-model="LeadOrganization" :rules="Rules.LeadOrganizationrule" label="Lead Organization"></v-text-field>
+    <v-btn  color="success" id="submitbtn" class="mr-4" @click="submit">Submit</v-btn>
+    </v-form>
+    <v-form v-show="form2" class="form" ref="form2">
+    <v-select label="Project Code" v-model="ProjectCode2" :items="Pcodes" @change="selector" :rules=" Rules.ProjectCode2 " required></v-select>
+    <v-card>
+    <v-card-text>
+    <p class=" card-text text--primary">Project Name: {{ProjectName2}}</p>
+    <p class=" card-text text--primary">Lead Organization: {{LeadOrganization2}}</p>
+    </v-card-text>
+    </v-card>
+    <v-btn  color="success" id="submitbtn2" class="mr-4" @click="submit2">Submit</v-btn>
+    </v-form>
+    </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
 
 <script>
+import _ from 'underscore'
 import Personalcosts from '@/components/Personalcosts.vue'
 import subContracting from '@/components/subContracting.vue'
 import Localoffice from '@/components/localofficeCost.vue'
@@ -199,6 +248,15 @@ import Travel  from '@/components/Travel.vue'
 export default{
   data(){
   return{
+  form1:true,
+  from2:false,
+  ProjectName:'',
+  ProjectCode:'',
+  LeadOrganization:'',
+  ProjectName2:'',
+  ProjectCode2:'',
+  LeadOrganization2:'',
+  dialog:false,
   personalcostTotal:0,
   personalcostyear1total:0,
   localofficeTotal:0,
@@ -227,6 +285,20 @@ export default{
   TravleshowSpan:true,
   MeetingndworkshopsSpan:true,
   projectequipmentMaintenensesSpan:true,
+  errmsg:'',
+   
+  Projects:[{Projectnames:'sos', ProjectCodes:1,LeadOrganizations:'jkl'},
+            {Projectnames:'pos', ProjectCodes:2,LeadOrganizations:'jfj'}],
+  Pcodes:[1,2],
+
+
+  Rules:{
+  ProjectNamerule:[()=> !this.Pnamerule(this.ProjectName) || 'Project name already registerd ' ],
+  ProjectCodeule:[()=> !this.Pcoderule(this.ProjectCode) || 'Project code already registerd'],
+  LeadOrganizationrule:[()=> !this.Porganizationrule(this.LeadOrganization) || 'Organization already registerd'],
+  ProjectCode2:[v=> !!v || 'required']
+  },
+
   headers:[{text:'Budget categories',value:'',sortable:false},
   {text:'Units',value:'',sortable:false},
   {text:'No_of Units',value:'',sortable:false},
@@ -278,6 +350,49 @@ export default{
   travel(e){
    this.travelcost=e.subtotal
    this.yaer1travelcost=e.year1sum
+  },
+  submit(){
+  if(this.$refs.form1.validate()){
+  console.log('sucess')
+  }
+  else{
+  console.log('failed')
+  console.log(_.isMatch(this.Projects[0], {Projectnames:'s'}))
+  }
+  },
+  submit2(){
+  if(this.$refs.form2.validate()){
+  console.log('sucess')
+  }
+  else{
+  console.log('failed')
+  }
+  },
+  Pnamerule(v){
+  for(var i=0;i<this.Projects.length;i++){
+  if(v ===_.property('Projectnames')(this.Projects[i])){
+  return true
+  }
+  }
+  },
+  Porganizationrule(v){
+  for(var i=0;i<this.Projects.length;i++){ 
+  if(v ===_.property('LeadOrganizations')(this.Projects[i])){
+  return true
+  }
+  }
+  },
+  Pcoderule(v){
+  for(var i=0;i<this.Projects.length;i++){ 
+  if(parseInt(v) ===_.property('ProjectCodes')(this.Projects[i])){
+  return true
+  }
+  }
+  },
+  selector(){
+  let Pname2=_.where(this.Projects, {ProjectCodes:this.ProjectCode2})
+  this.ProjectName2=Pname2[0].Projectnames
+  this.LeadOrganization2=Pname2[0].LeadOrganizations
   }
   },
 computed:{
@@ -306,6 +421,45 @@ computed:{
 
 
 <style>
+.card-text{
+  font-size:1.5em;
+}
+#submitbtn{
+margin-left:150px;
+margin-bottom:10px;
+}
+#submitbtn2{
+  margin-left:150px;
+  margin-top:5px;
+margin-bottom:5px;
+}
+.form{
+padding:10px;
+}
+#addTop{
+  position:absolute;
+  top:14px;
+  right:2%;
+}
+.project{
+  
+  font-size:1.5em;
+  width:100%;
+
+}
+.project p{
+color:black;
+margin-bottom:5px !important;
+width:50%;
+}
+#top-table-no-data{
+  text-align:center;
+  color:white;
+  background-color:grey;
+  width:100%;
+  padding-left:0px;
+  padding-right:0px;
+}
 .subtotalspan{
   border-radius:15px;
   margin-left:20px;
@@ -381,5 +535,12 @@ color:black;
 }
 .year1{
   margin-left:15px;
+}
+.project span{
+  font-size:1em;
+  margin-left:10px;
+}
+.project{
+  text-align:centre;
 }
 </style>
